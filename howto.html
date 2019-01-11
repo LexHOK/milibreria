@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://bootswatch.com/4/united/bootstrap.min.css">
+    <title>Paso a paso - Mi Libreria</title>
+</head>
+<body class="container">
+    <h1 class="pt-4">Cómo crear "Mi <span class="text-primary">Libreria</span>"</h1>
+    <h2>Paso a paso, con comentarios y links</h2>
+    <p class="mt-3">
+        En este tutorial vamos a crear una app web en JavaScript puro que va a permitirnos ordenr nuetra lista de libros. Nos va a permitir añadir libros y borrarlos, no vamos a usar ningún framework o libreria. Vamos a escribir el código utilizando la metodología de programación orientada a objetos usando clases de ES6.
+    </p>
+    <p>
+        Tendremos una clase Libro, una clase UI y una clase Store, ya que utilizaremos el <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API/Local_storage">almacenamiento local</a> de nuestro navegador.
+
+    </p>
+    <p>
+        En este manual se ha creado suponiendo que el editor de código es Visual Studio Code con la extensión Live Server.
+    </p>
+    <ol class="pt-2">
+        <li>Crear proyecto con los archivos index.html y app.js</li>
+        <li class="mt-2"><mark>En index.html:</mark></li>
+        <ol>
+            <li>Especificar <strong>title</strong> "Mi Libreria".</li>
+            <li>Ir a <a target="_blank" href="https://bootswatch.com/">bootswatch</a> a escoger un css y añadir el <strong>link</strong> en el <strong>head</strong>.</li>
+            <li>Ir a <a target="_blank" href="https://fontawesome.com/">fontawesome</a> y cargar la libreria gratuira de css en el <strong>head</strong> arriba de bootstrap.</li>
+            <li>Activar Live Server.</li>
+            <li>En <strong>body</strong> anadir un <strong>div</strong> con clases <strong>"container mt-4"</strong></li>
+            <li>Dentro de ese <strong>div</strong> crear un <strong>h1</strong> con clases <strong>"display-4 text-center"</strong> y texto "Mi Libreria" dando a la palabra <u>Libreria</u> la clase <strong>"text-primary"</strong>.</li>
+            <li>En <strong>h1</strong> antes del texto incluye un icono usando la etiqueta <strong>i</strong> con las clases <strong>"fas fa-book-open text-primary"</strong>.</li>
+            <li>Despues de <strong>h1</strong> crea un <strong>form</strong> con id <strong>"book-form"</strong>, en este form no requerimos ningún action porque no hacemos llamadas a servidor.</li>
+            <li>Dentro de <strong>form</strong> crear <strong>div</strong> con clase <strong>"form-group"</strong> con: </li>
+            <ol>
+                <li>Un <strong>label</strong> para <strong>"title"</strong> con el texto "Título"</li>
+                <li>Un <strong>input</strong> tipo <strong>"text"</strong>, id <strong>"title"</strong> y una clase <strong>"form-control"</strong>.</li>
+            </ol>
+            <li>Copia el <strong>div</strong> dos veces.</li>
+            <li>En el segundo <strong>form-group</strong> cambiaremos <strong>"title"</strong> por <strong>"author"</strong> y "Título" por "Autor".</li>
+            <li>En el tercer <strong>form-group</strong> cambiaremos <strong>"title"</strong> por <strong>"isbn"</strong> y "Título" por "ISBN".</li>
+            <li>Seguidamente y dentro del <strong>form</strong> un <strong>input</strong> con el tipo <strong>"submit"</strong> in un valor <strong>"Añadir Libro"</strong> con las classes <strong>"btn btn-primary btn-block"</strong>.</li>
+            <li>Despues del <strong>form</strong> crear una tabla con las clases <strong>"table table-striped mt-5"</strong></li>
+            <li>Crear cabecera de la tabla (<strong>thead</strong>) con una línea (<strong>tr</strong>) con las cabeceras de las cuatro columnas (<strong>th</strong>) con los textos "Título", "Autor", "ISBN" y la última vacía para añadir un botón de borrado.</li>
+            <li>Despues de la cabecera creamos el cuerpo (<strong>tbody</strong>) con un id <strong>"book-list"</strong>, que utilizaremos para introducir todos nuestros libros mediante JavaScript.</li>
+            <li>Y al final del <strong>body</strong> llamamos a <strong>"app.js"</strong> con la etiqueta <strong>script</strong></li>
+        </ol>
+        <li class="mt-2"><mark>En app.js:</mark></li>
+        <ol>
+            <li><strong><span class="text-info">Ahora vamos a hacer lo mínimo para que en la aplicación veamos los libros.</span></strong></li>
+            <ol>
+                <li>Mapeamos el documento con comentarios para organizar nuestras tareas:</li>
+                <ol>    
+                    <li>// Book Class: Representa un libro</li>
+                    <li>// UI Class: Gestionar tareas en UI</li>
+                    <li>// Store Class : Gestiona Almacenamiento</li>
+                    <li>// Evento: Mostrar libro</li>
+                    <li>// Evento: Añadir libro</li>
+                    <li>// Evento: Borrar libro</li>
+                </ol>
+                <li>Crea <strong>class Book</strong> con un <strong>contructor</strong> con los parametros <strong>title, author, isbn</strong>. <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes">[pista: clases]</a></li>
+                <li>Crea <strong>class UI</strong>.</li>
+                <ol>
+                    <li>Crea el método estático <strong>UI.displayBooks</strong>. <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes/static">[pista: método estático]</a></li>
+                    <ol>
+                        <li>Para inicialmente cargar datos dummy copia: <strong>const StoredBooks = [{title: 'JS a lo bestia', author: 'Sacha R.', isbn:'0123456'}, {title: 'JS suavecito', author: 'Sacha R.', isbn:'6543210'}];</strong></li>
+                        <li>Crea una variable inmutable llamada <strong>books</strong> que equivalga a StoredBooks. <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/const">[pista: variable inmutable]</a></li>
+                        <li>Crea un loop que revise cada libro <strong>(book)</strong> en <strong>books</strong> y llame al método <strong>UI.addBookToList()</strong> con el parametro <strong>book</strong> utilizando un arrow function. <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach">[pista: loop]</a>, <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions">[pista: arrow function]</a></li>
+                    </ol>
+                    <li>Crea el método estático <strong>UI.addBookToList</strong> con un parametro <strong>book</strong>, que gestionará las lineas dentro de <strong>tbody</strong> con el id <strong>book-list</strong>.</li>
+                    <ol>
+                        <li>Crea una variable inmutable <strong>list</strong> que apuente al id mediante <strong>querrySelector</strong>.  <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelector">[pista: querrySelector]</a></li>
+                        <li>Crea una variable inmutable <strong>row</strong> que cree el elemento <strong>tr</strong>. <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/API/Document/createElement">[pista: createElement]</a></li>
+                        <li>Define la función <strong>innerHTML</strong> de <strong>row</strong> con comillas invertidas `` que incluya cuatro columnas <strong>td</strong> con los valores <strong>book.title, book.author, book.isbn</strong> y un link que apunta a la misma página con las clases <strong>"btn btn-danger btn-sm delete"</strong> y un texto "X". <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals">[pista: template literals]</a>, <a target="_blank" href="https://stackoverflow.com/questions/4855168/what-is-href-and-why-is-it-used/21397285">[pista: link]</a></li>
+                        <li>Anexa <strong>row</strong> como hijo de <strong>list</strong>. <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/API/Node/appendChild">[pista: appendChild]</a></li>
+                    </ol>
+                </ol>
+                <li>Crea el <strong>// Evento: Mostar Libro</strong> donde el método tiene un target <strong>document</strong> demanera que cuando se cargue la página llame a <strong>UI.displayBooks</strong>. <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/Events/DOMContentLoaded">[pista: content load]</a>, <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener">[pista: event listener]</a></li>
+                <li>Comprueba la aplicación, en este momento debería cargar 2 libros al cargar la página.</li>
+            </ol>
+            <li><strong><span class="text-info">Ahora vamos a hacer que podamos usar el formulario para añadir un libro.</span></strong> Ya tenemos el método <strong>UI.addBookToList</strong> y vamos a  reutilizarlo. Lo que necesitamos es recolectar la información del formulario, instanciar un nuevo libro y luego añadirlo a lista de libros. </li>
+            <ol>
+                <li>Crea el <strong>// Evento: Añadir libro</strong>:</li>
+                <ol>
+                    <li>Donde el método espera a que se someta un contenido en el elemento con la id <strong>book-form</strong>.</li>
+                    <li>Y cuando eso ocurra carga una arrow funtcion con un parametro <strong>e</strong> que realiza los siguientes pasos:</li>
+                    <ol>
+                        <li><strong>// Prevent actual submit</strong> Prevenir la acción por defecto de <strong>submit</strong> cogiendo el parametro <strong>e</strong>. <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/API/Event/preventDefault">[pista: seleccionar valor]</a></li>
+                        <li><strong>// Get form values</strong> Recoje los valores de los elementos input del formulario mediante variables inmutables <strong>title, author y isbn</strong> apuntando al id del input. <a target="_blank" href="https://www.w3schools.com/jsref/prop_text_value.asp">[pista: seleccionar valor]</a></li>
+                        <li><strong>// Instantiate Book</strong> Instancia un libro en una variable inmutable <strong>book</strong> que tenga como parametros las variables creadas en el punto anterior.</li>
+                        <li>Ejecuta el comando <strong>console.log(book);</strong>, guarda el documento y prueba el formulario.</li>
+                        <li>Si ves en la consola que se carga un objeto Book con los parametros <strong>title, author, isbn</strong> y los valores que has escrito borra el comando y al siguiente paso.</li>
+                        <li><strong>// Add Book to UI</strong> Ahora vamos añadir el libro al interfaz gráfico utilizando el método <strong>UI.addBookToList</strong> con el parametro <strong>book</strong>.</li>
+                        <li>Salvamos y probamos la app. Debería cargar el libro que añadimos en la lista. Ha funcionado con éxito pero ahora los campos del formulario muestran los valores incluso despues de añadirlos.</li>
+                        <li><strong>// Clear Fields</strong> Llama el método <strong>UI.clearFields();</strong></li>
+                        <li>Crea el método estático <strong>UI.clearFields</strong>. No requiere ningún parametro, y reestablece los valores de los inputs a vacio.</li>
+                    </ol>
+                </ol>
+            </ol>
+            <li><strong><span class="text-info">Ahora vamos a hacer que podamos eliminar un libro de la lista.</span></strong> Esto es algo que suele confundir a gente, dado que tenemos multiples botones de borrado no podemos apuntar al evento porque sólo borrara la primera línea. Vamos a utilizar algo llamado <a target="_blank" href="https://www.sitepoint.com/event-bubbling-javascript/">Event Propagation</a> donde donde selecionamos algo encima, en nuestro caso la lista de libros y apuntamos a aquello que ha sido clicado.</li>
+            <ol>
+                <li>Crea un evento donde el método espera a que se cliquee un contenido en el elemento con la id <strong>book-list</strong></li>
+                <li>Crea una arrow function con el parámetro <strong>e</strong> que imprima en la consola la propiedad <strong>target</strong> del parametro <strong>e</strong>. <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/API/Event/target">[pista: target]</a></li>
+                <li>Salva el documento, recarga la página y clica en uno de los botones para eliminar un libro y comprueba el resultado.</li>
+                <li>Borramos el <strong>console.log</strong> y ponemos ese resultado como parametro de <strong>UI.deleteBook</strong> debajo del comentario <strong>// Remove book from UI</strong></li>
+                <li>Ahora vamos a la clase <strong>UI</strong> y encima de <strong>clearFields</strong> creamos <strong>deleteBook</strong>, de manera estática, con el parametro <strong>el</strong>.</li>
+                <li>Ahora tenemos que asegurarnos que lo clicamos tiene la clase <strong>delete</strong>, creamos un condicional con la condición "el parametro tiene la clase <strong>delete</strong>". <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/if...else">[pista: condición]</a>, <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/API/Element/classList">[pista: contains class]</a></li>
+                <li>Si es así, queremos eliminar toda la línea no sólo el botón. Así que tenemos que buscar el elemento padre que será toda la línea y eliminarlo del DOM. <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLSelectElement/remove">[pista: eliminar elemento]</a>, <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/API/Node/parentElement">[pista: parent element]</a></li>
+            </ol>
+            <li><strong><span class="text-info">Ahora, antes de pasar a Almacenamiento vamos a tratar validaciones y alertas.</span></strong></li>
+            <ol>
+                <li>Validamos que todos los campos del formulario estén rellenados:</li>
+                <ol>
+                    <li>Antes de <strong>// Instantiate book</strong> vamos a crear <strong>// Validate</strong> con un condicional donde si <strong>title</strong> es igual a nada o <strong>author</strong> es igual a nada o <strong>isbn</strong> es igual a nada entonces muestra un alerta con el valor "Por favor, rellene todos los campos del formulario". <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Logical_Operators">[pista: operadores logicos]</a>, <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Equality_comparisons_and_sameness">[pista: igualdad]</a>, <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/API/Window/alert">[pista: alerta]</a></li>
+                    <li>Y para cualquier otra condición incluimos el código previamente escrito en <strong>// Instantiate Book //Add book to UI //Clear Fields</strong>.</li>
+                </ol>
+                <li>Integramos el mensaje de alerta en el UI.</li>
+                <ol>
+                    <li>En <strong>UI</strong> creamos el método estático <strong>showAlert</strong> con los parámetros <strong>message</strong> y <strong>className</strong>.</li>
+                    <li>Vamos a crear un <strong>div</strong> con el mensaje y las clases desde JS:</li>
+                    <ol>   
+                        <li>Crea la variable inmutable <strong>div</strong> para que cree el elemento <strong>div</strong></li>
+                        <li>Crea las classes <strong>alert</strong> y <strong>alert-$</strong>, donde $ es el valor de <strong>className</strong>. <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/API/Element/className">[pista: nombrar clase]</a></li>
+                        <li>Añade el texto indicando que quieres anexar un elemento hijo de <strong>div</strong> y que ese elemento es un nodo de texto con el valor de <strong>message</strong>. <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/API/Node/appendChild">[pista: anexar hijo]</a>, <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/API/Document/createTextNode">[pista: nodo de texto]</a></li>
+                        <li>Ahora vamos a resolver donde aparece. Queremos que aparezca entre el <strong>h1</strong> y el <strong>form</strong> dentro del <strong>div</strong> con la clase <strong>container</strong>.</li>
+                        <ol>
+                            <li>Creamos una variable inmutable <strong>container</strong> que selecciona la clase <strong>container</strong>.</li>
+                            <li>Creamos una variable inmutable <strong>form</strong> que selecciona la id <strong>book-form</strong>.</li>
+                            <li>Ahora, dentro del <strong>container</strong> insertamos el <strong>div</strong> antes del <strong>form</strong>.  <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/API/Node/insertBefore">[pista: instertar antes]</a></li>
+                        </ol>
+                    </ol>
+                    <li>Ahora vamos a llamar al método sustituyendo el <strong>alert</strong> en <strong>// Validate</strong> por <strong>UI.showAlert</strong> y añade el parámetro clase <strong>danger</strong>.</li>
+                    <li>Guarda el documento, refresca la app y comprueba que funciona.</li>
+                    <li>Si lo mantenemos de la forma en la que está el mensaje de alerta se quedará allí y cada vez que clicamos el botón se añadirá uno nuevo, así que vamos a hacer que desaparezca tras dos segundos.</li>
+                    <ol>
+                        <li>Volvemos a <strong>UI.showAlert</strong> y hacemos <strong>// Desaparecer en 2 segundos</strong>.</li>
+                        <li>Añadimos un método que realiza una cuenta atras de dos segundos, para borrar el elemento con la clase <strong>alert</strong>. <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/setTimeout">[pista: instertar antes]</a></li>
+                    </ol>
+                    <li>Guarda el documento, refresca la app y comprueba que funciona.</li>
+                    <li>Ahora vamos a crear un mensaje de éxito por añadir un libro:</li>
+                    <ol>
+                        <li>Antes de <strong>// Clear Fields</strong> añadimos <strong>// Show success message</strong></li>
+                        <li>Añadimos el método para enseñar mensajes con un parametro texto <strong>"Libro añadido"</strong> y uno clase <strong>"success"</strong>.</li>
+                    </ol>
+                    <li>Guarda el documento, refresca la app y comprueba que funciona.</li>
+                    <li>Y ahora añadimos el mensaje cuando borramos un libro:</li>
+                    <ol>
+                        <li>
+                            Despues de llamar al método <strong>UI.deleteBook</strong> añadimos el método para enseñar mensajes con un parametro texto <strong>"Libro eliminado"</strong> y uno clase <strong>"success"</strong>. 
+                        </li>
+                    </ol>
+                </ol>
+            </ol>
+            <li><strong><span class="text-info">Ahora vamos a crear todas las operaciones logicas para utilizar la memoria local.</span></strong></li>
+            <ol>
+                <li>Creamos la clase <strong>Store</strong> debajo de <strong>// Store Class: Gestiona Almacenamiento</strong>. con tres métodos estáticos:</li>
+                <ul>
+                    <li><strong>getBooks</strong></li>
+                    <li><strong>addBook</strong> con un parametro <strong>book</strong></li>
+                    <li><strong>removeBook</strong> con un parametro <strong>isbn</strong></li>
+                </ul>
+                <li>Ahora vamos a crear la lógica de estos métodos y los implementaremos despues. Hay que tener en cuenta localStorage utiliza key-value pair y vamos a tener un ítem llamado <strong>books</strong> que va a ser una versión en <strong>String</strong> de nuetro <strong>Array</strong> de libros dado que no podemos almacenar objetos en localStorage. Así que cuando queramos escribir algo tenemos que convertirlo en <strong>String</strong> y cuando queramos leerlo tenemos que hacer un análisis gramatical. </li>
+                <li>En <strong>getBooks</strong>:</li>
+                <ol>
+                    <li>Iniciamos una variable mutable llamada <strong>books</strong>.</li>
+                    <li>Comprobamos mediante una condicion si no existe el ítem <strong>books</strong>. Y si no existe inicializamos <strong>books</strong> como un <strong>Array</strong> vacio. <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/API/Storage/getItem">[pista: encontrar elemento]</a>, <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Glossary/array">[pista: Array]</a></li>
+                    <li>Si ya existe el ítem <strong>books</strong> tenemos que asignarle el valor del mismo a la variable <strong>books</strong> en formato JSON. <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/parse">[pista: Análisis JSON]</a></li>
+                    <li>Y finalmente devolvemos <strong>books</strong>.</li>
+                </ol>
+                <li>En <strong>addBook</strong>;</li>
+                <ol>
+                    <li>Creamos la variable inmutable <strong>books</strong> con el método  <strong>getBooks</strong> como valor.</li>
+                    <li>Añadimos el valor del parametro <strong>book</strong> en <strong>books</strong>. <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/push">[pista: Añadir a un array]</a></li>
+                    <li>Actualizamos el valor de <strong>localStorage</strong> con el actual valor de <strong>books</strong>. <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/API/Storage/setItem">[pista: asignar valor ítem]</a>, <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify">[pista: convertir en String]</a></li>
+                </ol>
+                <li>En <strong>removeBook</strong>:</li>
+                <ol>
+                    <li>Utilizamos el parámetro isbn para identificar el libro dado que sería único.</li>
+                    <li>Creamos la variable inmutable <strong>books</strong> con el método  <strong>getBooks</strong> como valor.</li>
+                    <li>Hacemos un loop en la array <strong>books</strong> con una función que requiere los parametros <strong>book</strong> y <strong>index</strong></li>
+                    <li>Y la función mira si el <strong>isbn</strong> del libro es el mismo que el <strong>isbn</strong> proporcionado.</li>
+                    <li>Si coincide lo que haremos será eliminar ese libro del array. <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/splice">[pista: modificar array]</a></li>
+                    <li>Actualizamos el valor de <strong>localStorage</strong> con el actual valor de <strong>books</strong>.</li>
+                </ol>
+            </ol>
+            <li><strong><span class="text-info">Y por último vamos a implementar el uso de la memoria local en nuestra app.</span></strong></li>
+            <ol>
+                <li>Empezamos eliminando nuetros datos de prueba que hemos creado en <strong>StoredBooks</strong>.</li>
+                <li>En <strong>UI.displayBooks</strong> damos a <strong>books</strong> el valor <strong>Store.getBooks</strong></li>
+                <li>Guarda el documento, refresca la app y comprueba que funciona.</li>
+                <li>Debajo de <strong>// Add book to UI</strong> creamos <strong>// Add book to store</strong></li>
+                <li>Guarda el documento, refresca la app y comprueba que funciona.</li>
+                <li>Debajo de <strong>// Remove book from UI</strong> creamos <strong>// Remove book from store</strong></li>
+                <li><strong>Store.removeBook</strong> nos pide el <strong>ISBN</strong> y lo que tenemos es el click del enlace. Lo que tenemos que hacer es navegar el DOM para recuperar el valor del texto dentro de la columna <strong>ISBN</strong>. Tenemos que subir al elemento padre, ir al elemento hermano previo y extraer el contenido como texto. <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/API/NonDocumentTypeChildNode/previousElementSibling">[pista: elemento hermano]</a>, <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/API/Node/textContent">[pista: contenido texto]</a></li>
+                <li>Guarda el documento, refresca la app y comprueba que funciona.</li>
+            </ol>
+        </ol>
+    </ol>
+    <br><br>
+    <h2 class="mt-6 text-center">¡Felicidades! Has creado la web app.</h2>
+    <br>
+    <br>
+    <br>
+</body>
+</html>
